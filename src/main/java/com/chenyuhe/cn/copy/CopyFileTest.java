@@ -7,7 +7,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 public class CopyFileTest {
 
@@ -128,6 +131,53 @@ public class CopyFileTest {
 				}
 			}
 		}
+	}
+
+	/**
+	 * NIO的transferTo实现文件的拷贝 零拷贝技术
+	 */
+	@Test
+	public void nioTransferTo() {
+
+		FileChannel inChannel = null;
+		FileChannel outChannel = null;
+
+		try {
+
+
+			// 读取文件
+			inChannel = FileChannel.open(Paths.get("e:/test/123.txt"), StandardOpenOption.READ);
+
+			// 输出文件
+			outChannel = FileChannel.open(Paths.get("e:/test/dest.txt"), StandardOpenOption.WRITE, StandardOpenOption.CREATE_NEW);
+
+			inChannel.transferTo(0, inChannel.size(), outChannel);
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+
+			if (inChannel != null) {
+				try {
+					inChannel.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			if (outChannel != null) {
+				try {
+					outChannel.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		System.out.println("进行文件的复制完成.......");
+
+
 	}
 
 
