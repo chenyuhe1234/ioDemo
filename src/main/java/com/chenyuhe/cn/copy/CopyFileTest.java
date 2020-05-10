@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 
 public class CopyFileTest {
 
@@ -50,6 +52,77 @@ public class CopyFileTest {
 			if (in != null) {
 				try {
 					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * NIO进行文件的复制 非直接缓冲区 每次进行IO操作 就会将缓冲区的内容复制到中间缓冲区中去
+	 * <p>
+	 * buffer既可以用来读也可以用来写 进行模式的切换用 xxxBuffer.flip()方法
+	 */
+	@Test
+	public void noDirectBufferFile() {
+
+		FileInputStream in = null;
+		FileOutputStream out = null;
+		FileChannel inChannel = null;
+		FileChannel outChannel = null;
+		try {
+			in = new FileInputStream("e:/test/123.txt");
+			out = new FileOutputStream("e:/test/dest.txt");
+			inChannel = in.getChannel();
+			outChannel = out.getChannel();
+
+			// 缓冲区
+			ByteBuffer buffer = ByteBuffer.allocate(1024);
+			// 将通道中的数据存入缓冲区
+			while (inChannel.read(buffer) != -1) {
+				buffer.flip();
+				outChannel.write(buffer);
+				buffer.clear();
+
+
+			}
+			System.out.println("完成了文件的复制.......");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+
+			if (inChannel != null) {
+				try {
+					inChannel.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+
+			if (outChannel != null) {
+				try {
+					outChannel.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+
+			if (out != null) {
+				try {
+					out.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
