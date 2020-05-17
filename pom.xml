@@ -34,6 +34,12 @@
 			<version>4.11</version>
 		</dependency>
 
+		<!--引入netty-->
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.0.28.Final</version>
+		</dependency>
 
 		<!--common-->
 		<dependency>
